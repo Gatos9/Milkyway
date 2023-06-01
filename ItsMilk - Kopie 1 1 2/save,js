@@ -1,0 +1,42 @@
+ window.requestAnimationFrame(animate);
+
+  const msNow = window.performance.now();
+  const msPassed = msNow - msPrev;
+
+  // If time passed between the current frame and the previous frame is less than the desired frame rate, return
+  if (msPassed < msPerFrame) return;
+
+  const excessTime = msPassed % msPerFrame;
+  msPrev = msNow - excessTime;
+
+  // Clear the canvas with white color in each frame
+
+  background.draw();
+
+  doors.forEach((collisionBlock) => {
+    collisionBlock.draw();
+  });
+
+  // Draw and update the player object in each frame of the animation
+  player.draw();
+  player.update();
+  enemys.forEach((enemy, index) => {
+    enemy.number = index;
+    enemy.collisionBlocks = collisionBlocks;
+    enemy.draw();
+    enemy.update();
+  });
+
+  // Check which keys are pressed and call the corresponding functions
+  if (keys.w.isPressed) jump();
+  if (keys.a.isPressed && keys.d.isPressed) {
+    stopMovement();
+  } else if (keys.a.isPressed) moveLeft();
+  else if (keys.d.isPressed) moveRight();
+
+  c.save();
+  c.globalAlpha = overlay.opacity;
+  c.fillStyle = "black";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  c.restore();
+  frames++;
